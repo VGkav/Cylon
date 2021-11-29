@@ -1,0 +1,3 @@
+#include "C:\masm32\include\resource.h"
+
+IDR_ICON ICON DISCARDABLE "eyes1.ico"

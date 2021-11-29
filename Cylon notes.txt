@@ -1,0 +1,114 @@
+invoke GetPrivateProfileIntA,offset Antiantidebuggingstring,offset PEBBDstring,1,offset OptionsFileName
+cmp eax,0
+jne @dontskip1
+invoke MessageBoxA ,0,offset ntdll_string,offset ntdll_string,0
+inc byte ptr [PEBBDoptionskip]
+inc byte ptr [ZWQPIoptionskip]
+jmp @dontskip2
+@dontskip1:
+
+invoke GetPrivateProfileIntA,offset Antiantidebuggingstring,offset ZWQPIstring,1,offset OptionsFileName
+test eax,eax
+jnz @dontskip2
+inc byte ptr [ZWQPIoptionskip]
+
+@dontskip2:
+
+*************************************************************************
+7C90E01B >  B8 9A000000     MOV EAX,9A
+7C90E020    BA 0003FE7F     MOV EDX,7FFE0300
+7C90E025    FF12            CALL DWORD PTR DS:[EDX]
+7C90E027    C2 1400         RETN 14
+
+
+7C90E01B >  B8 9A000000     MOV EAX,9A
+7C90E020    BA 0003FE7F     MOV EDX,7FFE0300
+7C90E025  - E9 D61F6903     JMP 7FFA0000
+
+
+7FFA0000    FF12            CALL DWORD PTR DS:[EDX]           ; old version
+7FFA0002    837C24 08 07    CMP DWORD PTR SS:[ESP+8],7
+7FFA0007    75 0C           JNZ SHORT 7FFA0015
+7FFA0009    8B4424 0C       MOV EAX,DWORD PTR SS:[ESP+C]
+7FFA000D    C700 00000000   MOV DWORD PTR DS:[EAX],0
+7FFA0013    33C0            XOR EAX,EAX
+7FFA0015    C2 1400         RETN 14
+
+7C90D7EA    FF12            CALL DWORD PTR DS:[EDX]
+7C90D7EC    837C24 08 07    CMP DWORD PTR SS:[ESP+8],7
+7C90D7F1    75 11           JNZ SHORT ntdll.7C90D804
+7C90D7F3    837C24 04 FF    CMP DWORD PTR SS:[ESP+4],-1
+7C90D7F8    75 0A           JNZ SHORT ntdll.7C90D804
+7C90D7FA    8B4424 0C       MOV EAX,DWORD PTR SS:[ESP+C]
+7C90D7FE    C700 00000000   MOV DWORD PTR DS:[EAX],0
+7C90D804    33C0            XOR EAX,EAX
+7C90D806    C2 1400         RETN 14
+
+
+FF 12 83 7C 24 08 07 75 0C 8B 44 24 0C C7 00 00 00 00 00 33 C0 C2 14 00
+
+FF 12 83 7C 24 08 07 75 11 83 7C 24 04 FF 75 0A 8B 44 24 0C C7 00 00 00 00 00 33 C0 C2 14 00
+
+
+DebugSetProcessKillOnExit(msdn dokumentation) it tells windows if it should terminate the process on detach or not :) its default is true.. if you set it too false you may call DebugActiveProcessStop and detach the debugger from the process without terminating
+
+***********************************************************************
+typedef struct _EXCEPTION_RECORD {
+  DWORD ExceptionCode;
+  DWORD ExceptionFlags;
+  struct _EXCEPTION_RECORD* ExceptionRecord;
+  PVOID ExceptionAddress;
+  DWORD NumberParameters;
+  ULONG_PTR ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
+} EXCEPTION_RECORD, 
+ *PEXCEPTION_RECORD;
+
+First exception (called by the program, bp at zwraiseexception)
+08 00 00 C0 
+00 00 00 00 
+00 00 00 00 
+5B 2A 81 7C 
+00 00 00 00 
+;;;01 00 00 00
+
+Second Exception (normal exception, due to ring 3 debugging)
+08 00 00 C0 
+00 00 00 00 
+00 00 00 00 
+74 EB 90 7C 
+00 00 00 00 
+;;;20 E8 12 00
+
+7C90EB6F    E8 38000000     CALL ntdll.RtlRaiseException
+7C90EB74    8B0424          MOV EAX,DWORD PTR SS:[ESP]
+7C90EB77    8BE5            MOV ESP,EBP
+7C90EB79    5D              POP EBP
+7C90EB7A    C3              RETN
+
+
+
+
+0012F19C   FFFFFFFE
+0012F1A0   00000007
+0012F1A4   0012F1B0
+0012F1A8   00000004
+0012F1AC   00000000
+
+0012F19C   FFFFFFFF
+0012F1A0   00000007
+0012F1A4   0012F1B0
+0012F1A8   00000004
+0012F1AC   00000000
+
+**********************************************************************************************************************************************************************************
+ZwSetInformationThread
+
+7FF90000    837C24 08 11    CMP DWORD PTR SS:[ESP+8],11
+7FF90005    75 03           JNZ SHORT 7FF9000A
+7FF90007    C2 1000         RET 10
+7FF9000A    B8 E5000000     MOV EAX,0E5
+7FF9000F  - E9 81DC97FC     JMP ntdll.7C90DC95
+
+83 7C 24 08 11 75 03 C2 10 00 B8 E5 00 00 00 E9 81 DC 97 FC
+
+

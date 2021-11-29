@@ -1,0 +1,35 @@
+7FF80000    837C24 08 11    CMP DWORD PTR SS:[ESP+8],11
+7FF80005    75 03           JNZ SHORT 7FF8000A
+7FF80007    C2 1000         RET 10
+7FF8000A    B8 E5000000     MOV EAX,0E5
+7FF8000F  - E9 81DC98FC     JMP ntdll.7C90DC95
+
+
+
+CONTEXT STRUCT
+  ContextFlags  DWORD      ?
+  iDr0          DWORD      ?
+  iDr1          DWORD      ?
+  iDr2          DWORD      ?
+  iDr3          DWORD      ?
+  iDr6          DWORD      ?
+  iDr7          DWORD      ?
+  FloatSave     FLOATING_SAVE_AREA <>
+  regGs         DWORD      ?
+  regFs         DWORD      ?
+  regEs         DWORD      ?
+  regDs         DWORD      ?
+  regEdi        DWORD      ?
+  regEsi        DWORD      ?
+  regEbx        DWORD      ?
+  regEdx        DWORD      ?
+  regEcx        DWORD      ?
+  regEax        DWORD      ?
+  regEbp        DWORD      ?
+  regEip        DWORD      ?
+  regCs         DWORD      ?
+  regFlag       DWORD      ?
+  regEsp        DWORD      ?
+  regSs         DWORD      ?
+  ExtendedRegisters db MAXIMUM_SUPPORTED_EXTENSION dup(?)
+CONTEXT ENDS
