@@ -8,4 +8,4 @@ This is a debug loader for 32bit Windows executables. It loads an executable wit
 
 (3) Patching ZwSetInformationThread API
 
-These may be unstable in newer Windows versions, only enabled if needed.
+These may be unstable in newer Windows versions, only enable if needed.
